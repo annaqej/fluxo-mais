@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fluxo+ | Gestão Financeira</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+
+    <!-- TELA DE LOGIN -->
+    <section id="telaLogin" class="login-container">
+        <div class="login-card">
+            <h1>Fluxo<span>+</span></h1>
+            <p class="login-subtitle">Auto Elétrico Denicar</p>
+
+            <h2>Bem-vindo!</h2>
+            <p class="login-description">Entre com seus dados para continuar.</p>
+
+            <form id="formLogin">
+                <div class="form-group">
+                    <label for="usuarioLogin">Usuário</label>
+                    <input type="text" id="usuarioLogin" placeholder="Digite seu usuário" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="senhaLogin">Senha</label>
+                    <input type="password" id="senhaLogin" placeholder="Digite sua senha" required>
+                </div>
+
+                <p id="mensagemLogin" class="mensagem-login"></p>
+
+                <button type="submit" class="btn-entrar">
+                    Entrar
+                </button>
+            </form>
+        </div>
+    </section>
+
+
+    <aside class="sidebar">
+        <div class="logo">
+            <h2>Fluxo+</h2>
+            <span>Auto Elétrico Denicar</span>
+        </div>
+
+        <nav>
+            <a href="#" class="active" data-page="inicio">▦ Início</a>
+            <a href="#" data-page="entradas">↗ Entradas</a>
+            <a href="#" data-page="despesas">↘ Despesas</a>
+            <a href="#" data-page="movimentacoes">☷ Movimentações</a>
+            <a href="#" data-page="pendentes">▤ Pagamentos Pendentes</a>
+            <a href="#" data-page="relatorios">▧ Relatórios</a>
+            <a href="#" data-page="configuracoes">⚙ Configurações</a>
+        </nav>
+        <button class="btn-sair" onclick="sairDaConta()">
+            ↪ Sair da conta
+        </button>
+    </aside>
+
+    <main class="main-content">
+
+        <!-- INÍCIO -->
+        <section class="page active" id="inicio">
+
+            <header>
+                <div>
+                    <h1>Gestão Financeira</h1>
+                    <p>Oficina Auto Elétrico Denicar</p>
+                </div>
+
+                <select id="mes"></select>
+            </header>
+
+            <section class="cards">
+
+                <div class="card">
+                    <span>Total de Entradas</span>
+                    <h2 id="inicioEntradas">R$ 0,00</h2>
+                    <span class="green">↗</span>
+                </div>
+
+                <div class="card">
+                    <span>Total de Despesas</span>
+                    <h2 id="inicioDespesas">R$ 0,00</h2>
+                    <span class="red">↘</span>
+                </div>
+
+                <div class="card">
+                    <span>Saldo Bruto</span>
+                    <h2 id="inicioSaldoBruto">R$ 0,00</h2>
+                    <span class="blue">$</span>
+                </div>
+
+                <div class="card">
+                    <span>Saldo Líquido</span>
+                    <h2 id="inicioSaldoLiquido" class="green">R$ 0,00</h2>
+                    <span class="purple">▣</span>
+                </div>
+
+            </section>
+
+            <section class="panel">
+                <h3>Entradas vs Despesas</h3>
+
+                <div class="chart">
+
+                    <div class="bar-container">
+                        <div class="bar green-bar" id="inicioBarraEntrada" style="height: 0%"></div>
+                        <span>Entradas</span>
+                        <strong id="inicioValorEntrada">R$ 0,00</strong>
+                    </div>
+
+                    <div class="bar-container">
+                        <div class="bar red-bar" id="inicioBarraDespesa" style="height: 0%"></div>
+                        <span>Despesas</span>
+                        <strong id="inicioValorDespesa">R$ 0,00</strong>
+                    </div>
+
+                </div>
+            </section>
+
+            <section class="panel">
+                <h3>Últimas Movimentações</h3>
+
+                <div id="inicioUltimasMovimentacoes">
+                    <p class="empty">Carregando movimentações...</p>
+                </div>
+            </section>
+
+        </section>
+
+        <!-- ENTRADAS -->
+
+        <section class="page" id="entradas">
+
+            <button class="btn-voltar" onclick="voltarInicio()">
+                ← Voltar
+            </button>
+
+            <header class="form-header">
+                <div>
+                    <h1>Nova Entrada</h1>
+                    <p>Cadastre uma nova entrada de dinheiro</p>
+                </div>
+            </header>
+
+            <div class="panel form-panel">
+                <h3>Informações da Entrada</h3>
+                <p class="form-description">
+                    Preencha os dados abaixo para registrar a entrada
+                </p>
+
+                <form id="formEntrada">
+
+                    <div class="form-group">
+                        <label for="descricao">Descrição *</label>
+                        <input type="text" id="descricao" placeholder="Ex: Serviço de instalação elétrica" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cliente">Nome do Cliente *</label>
+                        <input type="text" id="cliente" placeholder="Ex: João Silva" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="categoria">Categoria *</label>
+                        <select id="categoria" required>
+                            <option value="">Carregando categorias...</option>
+                        </select>
+                    </div>
+
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="valor">Valor (R$) *</label>
+                            <input type="number" id="valor" placeholder="0,00" min="0.01" step="0.01" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="dataEntrada">Data</label>
+                            <input type="date" id="dataEntrada" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="formaPagamento">Forma de Pagamento *</label>
+                        <select id="formaPagamento" required>
+                            <option value="">Carregando formas de pagamento...</option>
+                        </select>
+
+
+                        <div class="form-group">
+                            <label for="parcelas">Quantidade de Parcelas</label>
+                            <input type="number" id="parcelas" value="1" min="1" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="observacao">Observações</label>
+                        <textarea id="observacao" placeholder="Informações adicionais (opcional)" rows="4"></textarea>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="btn-salvar">
+                            Salvar Entrada
+                        </button>
+
+                        <button type="button" class="btn-cancelar" onclick="cancelarEntrada()">
+                            Cancelar
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </section>
+
+
+        <!-- DESPESAS -->
+
+        <section class="page" id="despesas">
+
+            <button class="btn-voltar" onclick="voltarInicio()">
+                ← Voltar
+            </button>
+
+            <header class="form-header">
+                <div>
+                    <h1>Nova Despesa</h1>
+                    <p>Cadastre uma nova despesa da oficina</p>
+                </div>
+            </header>
+
+            <div class="panel form-panel">
+                <h3>Informações da Despesa</h3>
+
+                <p class="form-description">
+                    Preencha os dados abaixo para registrar a despesa
+                </p>
+
+                <form id="formDespesa">
+
+                    <div class="form-group">
+                        <label for="descricaoDespesa">Descrição da Despesa *</label>
+                        <input type="text" id="descricaoDespesa" placeholder="Ex: Compra de peças" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="categoriaDespesa">Categoria *</label>
+                        <select id="categoriaDespesa" required>
+                            <option value="">Carregando categorias...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label for="valorDespesa">Valor (R$) *</label>
+                            <input type="number" id="valorDespesa" placeholder="0,00" min="0.01" step="0.01" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="dataVencimento">Data de Vencimento *</label>
+                            <input type="date" id="dataVencimento" required>
+                        </div>
+
+                    </div>
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label for="dataPagamento">Data de Pagamento</label>
+                            <input type="date" id="dataPagamento">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="formaPagamentoDespesa">Forma de Pagamento *</label>
+                            <select id="formaPagamentoDespesa" required>
+                                <option value="">Carregando formas de pagamento...</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="statusDespesa">Status *</label>
+                        <select id="statusDespesa" required>
+                            <option value="Pendente">Pendente</option>
+                            <option value="Pago">Pago</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="observacaoDespesa">Observações</label>
+                        <textarea id="observacaoDespesa" placeholder="Informações adicionais (opcional)"
+                            rows="4"></textarea>
+                    </div>
+
+                    <div class="form-buttons">
+
+                        <button type="submit" class="btn-salvar">
+                            Salvar Despesa
+                        </button>
+
+                        <button type="button" class="btn-cancelar" onclick="cancelarDespesa()">
+                            Cancelar
+                        </button>
+
+                    </div>
+
+                </form>
+            </div>
+
+        </section>
+
+
+        <!-- TELA DE MOVIMENTAÇÕES -->
+        <section class="page" id="movimentacoes">
+
+            <header class="page-header">
+                <h1>Lista de Movimentações</h1>
+                <p>Consulte e gerencie entradas e despesas</p>
+            </header>
+
+            <!-- FILTROS -->
+            <div class="panel movimentacoes-filtros">
+
+                <h3>Filtros</h3>
+
+                <div class="filtros-grid">
+
+                    <div class="form-group">
+                        <label for="buscaMovimentacao">Buscar</label>
+                        <input type="text" id="buscaMovimentacao"
+                            placeholder="Buscar por descrição, cliente ou data...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="filtroMes">Mês</label>
+                        <input type="month" id="filtroMes">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="filtroTipo">Tipo</label>
+                        <select id="filtroTipo">
+                            <option value="">Todos</option>
+                            <option value="Entrada">Entradas</option>
+                            <option value="Despesa">Despesas</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="filtroPagamento">Forma de Pagamento</label>
+                        <select id="filtroPagamento">
+                            <option value="">Todos</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="filtroStatus">Status</label>
+                        <select id="filtroStatus">
+                            <option value="">Todos</option>
+                            <option value="Pago">Pago</option>
+                            <option value="Pendente">Pendente</option>
+                            <option value="Parcial">Parcial</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="filtros-acoes">
+                    <button type="button" id="limparFiltros" class="btn-limpar">
+                        Limpar Filtros
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- TABELA -->
+            <div class="panel tabela-movimentacoes">
+
+                <div class="tabela-titulo">
+                    <h3>Movimentações (<span id="totalMovimentacoes">0</span>)</h3>
+                </div>
+
+                <div class="tabela-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Descrição</th>
+                                <th>Cliente/Fornecedor</th>
+                                <th>Tipo</th>
+                                <th>Pagamento</th>
+                                <th>Valor</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="listaMovimentacoes">
+                            <tr>
+                                <td colspan="8" class="tabela-vazia">
+                                    Nenhuma movimentação cadastrada.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- PAGAMENTOS PENDENTES -->
+        <section class="page" id="pendentes">
+
+            <div class="pendentes-header">
+                <h1>Pagamentos Pendentes</h1>
+                <p>Controle de valores pendentes de pagamento</p>
+            </div>
+
+            <!-- CARDS DE RESUMO -->
+            <div class="resumo-pendentes">
+
+                <div class="card-pendente">
+                    <div class="card-pendente-titulo">
+                        <span>Total Pendente</span>
+                        <span class="icone-pendente">◷</span>
+                    </div>
+                    <h2 id="totalPendente">R$ 0,00</h2>
+                </div>
+
+                <div class="card-pendente">
+                    <div class="card-pendente-titulo">
+                        <span>Quantidade de Pendências</span>
+                        <span class="icone-pendente">!</span>
+                    </div>
+                    <h2 id="quantidadePendencias">0</h2>
+                </div>
+
+                <div class="card-pendente">
+                    <div class="card-pendente-titulo">
+                        <span>Pendências Vencidas</span>
+                        <span class="icone-pendente">!</span>
+                    </div>
+                    <h2 id="pendenciasVencidas">0</h2>
+                </div>
+
+            </div>
+
+            <!-- LISTA DE PENDÊNCIAS -->
+            <div class="panel tabela-pendentes">
+
+                <h3>Lista de Pendências</h3>
+
+                <div class="tabela-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Cliente/Fornecedor</th>
+                                <th>Descrição</th>
+                                <th>Valor</th>
+                                <th>Data</th>
+                                <th>Forma de Pagamento</th>
+                                <th>Situação</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="listaPendentes">
+                            <tr>
+                                <td colspan="7">Carregando pendências...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- RELATÓRIOS -->
+        <section class="page" id="relatorios">
+
+            <header class="relatorios-header">
+                <div>
+                    <h1 id="tituloRelatorio">Relatório Mensal</h1>
+                    <p>Análise financeira detalhada</p>
+                </div>
+
+                <div class="relatorios-acoes">
+
+                    <select id="tipoPeriodoRelatorio">
+                        <option value="mensal">Mensal</option>
+                        <option value="trimestral">Trimestral</option>
+                        <option value="anual">Anual</option>
+                    </select>
+
+                    <select id="mesRelatorio">
+                    </select>
+
+                    <button class="btn-exportar" onclick="exportarRelatorio()">
+                        ↓ Exportar Relatório
+                    </button>
+
+                </div>
+            </header>
+
+            <!-- INDICADORES -->
+            <div class="resumo-relatorios">
+
+                <div class="card-relatorio">
+                    <span>Total de Entradas</span>
+                    <h2 id="relTotalEntradas">R$ 0,00</h2>
+                    <small class="cor-entrada">↑ Entradas</small>
+                </div>
+
+                <div class="card-relatorio">
+                    <span>Total de Despesas</span>
+                    <h2 id="relTotalDespesas">R$ 0,00</h2>
+                    <small class="cor-despesa">↓ Despesas</small>
+                </div>
+
+                <div class="card-relatorio">
+                    <span>Saldo Bruto</span>
+                    <h2 id="relSaldoBruto">R$ 0,00</h2>
+                    <small>Receitas totais</small>
+                </div>
+
+                <div class="card-relatorio">
+                    <span>Saldo Líquido</span>
+                    <h2 id="relSaldoLiquido">R$ 0,00</h2>
+                    <small>Entradas menos despesas</small>
+                </div>
+
+                <div class="card-relatorio">
+                    <span>Registros</span>
+                    <h2 id="relQuantidade">0</h2>
+                    <small>Movimentações no período</small>
+                </div>
+
+            </div>
+
+            <!-- GRÁFICO -->
+            <div class="panel grafico-relatorio">
+
+                <h3>Comparativo: Entradas vs Despesas</h3>
+
+                <div class="grafico-container">
+
+                    <div class="grafico-eixo">
+                        <span>100%</span>
+                        <span>75%</span>
+                        <span>50%</span>
+                        <span>25%</span>
+                        <span>0%</span>
+                    </div>
+
+                    <div class="grafico-barras">
+
+                        <div class="barra-grupo">
+                            <div class="barra-valor" id="valorBarraEntrada">
+                                R$ 0,00
+                            </div>
+                            <div class="barra barra-entrada" id="barraEntrada"></div>
+                            <span>Entradas</span>
+                        </div>
+
+                        <div class="barra-grupo">
+                            <div class="barra-valor" id="valorBarraDespesa">
+                                R$ 0,00
+                            </div>
+                            <div class="barra barra-despesa" id="barraDespesa"></div>
+                            <span>Despesas</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- DESPESAS POR CATEGORIA -->
+            <div class="panel tabela-categorias">
+
+                <h3>Despesas por Categoria</h3>
+
+                <div class="tabela-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Categoria</th>
+                                <th>Quantidade</th>
+                                <th>Total</th>
+                                <th>% do Total</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="listaDespesasCategoria">
+                            <tr>
+                                <td colspan="4">Carregando relatório...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- CONFIGURAÇÕES -->
+        <section class="page" id="configuracoes">
+
+            <header class="form-header">
+                <div>
+                    <h1>Configurações</h1>
+                    <p>Gerencie as informações e opções do sistema</p>
+                </div>
+            </header>
+
+            <div class="configuracoes-container">
+
+                <div class="panel configuracao-card">
+                    <div class="configuracao-titulo">
+                        <span>📂</span>
+                        <div>
+                            <h3>Categorias</h3>
+                            <p>Gerencie as categorias de entradas e despesas</p>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn-salvar" onclick="abrirGerenciarCategorias()">
+                        Gerenciar categorias
+                    </button>
+                </div>
+
+                <div class="panel configuracao-card">
+                    <div class="configuracao-titulo">
+                        <span>💳</span>
+                        <div>
+                            <h3>Formas de pagamento</h3>
+                            <p>Gerencie as formas de pagamento disponíveis</p>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn-salvar" onclick="abrirGerenciarPagamentos()">
+                        Gerenciar formas de pagamento
+                    </button>
+                </div>
+
+                <div class="panel configuracao-card">
+                    <div class="configuracao-titulo">
+                        <span>👤</span>
+                        <div>
+                            <h3>Conta</h3>
+                            <p>Informações da conta conectada</p>
+                        </div>
+                    </div>
+
+                    <p id="emailConfiguracao"></p>
+
+                    <button type="button" class="btn-cancelar"
+                        onclick="Parse.User.logOut().then(() => location.reload())">
+                        Sair da conta
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- GERENCIAR CATEGORIAS -->
+            <div class="panel configuracao-card" id="painelCategorias" hidden>
+                <h3>Gerenciar categorias</h3>
+
+                <form id="formCategoria">
+                    <div class="form-group">
+                        <label for="nomeCategoriaConfig">Nome da categoria</label>
+                        <input type="text" id="nomeCategoriaConfig" placeholder="Digite o nome" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="descricaoCategoriaConfig">Descrição</label>
+                        <input type="text" id="descricaoCategoriaConfig" placeholder="Digite uma descrição">
+                    </div>
+
+                    <button type="submit" class="btn-salvar" id="btnSalvarCategoria">
+                        Adicionar categoria
+                    </button>
+                    <button type="button" class="btn-cancelar" id="btnCancelarCategoria"
+                        onclick="cancelarEdicaoCategoria()" style="display: none;">
+                        Cancelar edição
+                    </button>
+                </form>
+
+                <div id="listaCategoriasConfig"></div>
+            </div>
+
+            <!-- GERENCIAR FORMAS DE PAGAMENTO -->
+            <div class="panel configuracao-card" id="painelPagamentos" hidden>
+                <h3>Gerenciar formas de pagamento</h3>
+
+                <form id="formPagamentoConfig">
+                    <div class="form-group">
+                        <label for="nomePagamentoConfig">Nome da forma de pagamento</label>
+                        <input type="text" id="nomePagamentoConfig" placeholder="Digite o nome" required>
+                    </div>
+
+                    <button type="submit" class="btn-salvar" id="btnSalvarPagamento">
+                        Adicionar forma de pagamento
+                    </button>
+                    <button type="button" class="btn-cancelar" id="btnCancelarPagamento"
+                        onclick="cancelarEdicaoPagamento()" style="display: none;">
+                        Cancelar edição
+                    </button>
+                </form>
+
+                <div id="listaPagamentosConfig"></div>
+            </div>
+
+            <div class="panel configuracao-card">
+                <div class="configuracao-titulo">
+                    <span>🌙</span>
+                    <div>
+                        <h3>Aparência</h3>
+                        <p>Personalize a aparência do sistema</p>
+                    </div>
+                </div>
+
+                <div class="opcao-tema">
+                    <div>
+                        <strong>Tema escuro</strong>
+                        <p>Ativar a aparência escura do sistema</p>
+                    </div>
+
+                    <label class="switch">
+                        <input type="checkbox" id="temaEscuro">
+                        <span class="switch-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    <!-- MODAL DE CONFIRMAÇÃO -->
+    <div id="modalPagamento" class="modal-overlay">
+        <div class="modal-pagamento">
+            <div class="modal-icone">✓</div>
+
+            <h3>Confirmar pagamento?</h3>
+
+            <p>Deseja realmente marcar esta parcela como paga?</p>
+
+            <div class="modal-botoes">
+                <button type="button" class="btn-cancelar-modal" onclick="fecharModalPagamento()">
+                    Cancelar
+                </button>
+
+                <button type="button" class="btn-confirmar-modal" id="confirmarPagamento">
+                    Confirmar pagamento
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICAÇÃO -->
+    <div id="notificacao" class="notificacao"></div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/parse@5.3.0/dist/parse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+
+    <script src="script.js"></script>
+
+
+
+
+</body>
+
+</html>
