@@ -63,11 +63,23 @@ const mensagemLogin = document.getElementById("mensagemLogin");
 
 // VERIFICAR SE JÁ EXISTE UMA SESSÃO
 async function verificarLogin() {
-    const usuario = Parse.User.current();
+    try {
+        const usuario = Parse.User.current();
 
-    if (usuario && usuario.getSessionToken()) {
-        document.body.classList.add("logado");
-    } else {
+        if (usuario && usuario.getSessionToken()) {
+            await usuario.fetch();
+
+            document.body.classList.add("logado");
+            await carregarDadosIniciais();
+
+        } else {
+            document.body.classList.remove("logado");
+        }
+
+    } catch (erro) {
+        console.error("Erro ao verificar login:", erro);
+
+        await Parse.User.logOut();
         document.body.classList.remove("logado");
     }
 }
@@ -88,6 +100,8 @@ formLogin.addEventListener("submit", async function (event) {
         document.body.classList.add("logado");
 
         formLogin.reset();
+
+        await carregarDadosIniciais();
 
     } catch (erro) {
         mensagemLogin.textContent =
@@ -345,8 +359,6 @@ function cancelarEntrada() {
 
 // VERIFICAR SESSÃO AO ABRIR O SITE
 verificarLogin();
-carregarCategorias();
-carregarFormasPagamento();
 
 // MOVIMENTAÇÕES
 
@@ -866,9 +878,6 @@ async function iniciarMovimentacoes() {
     await carregarMovimentacoes();
 }
 
-iniciarMovimentacoes();
-
-
 // CARREGAR CATEGORIAS DAS DESPESAS
 async function carregarCategoriasDespesa() {
     const select = document.getElementById("categoriaDespesa");
@@ -1086,9 +1095,7 @@ function cancelarDespesa() {
 }
 
 
-// CARREGAR OPÇÕES
-carregarCategoriasDespesa();
-carregarFormasPagamentoDespesa();
+
 
 // PAGAMENTOS PENDENTES
 
@@ -1952,9 +1959,6 @@ function exportarRelatorio() {
 }
 
 
-// INICIALIZAR RELATÓRIOS
-carregarMesesRelatorio();
-
 // ABRIR GERENCIAMENTO DE CATEGORIAS
 function abrirGerenciarCategorias() {
     document.getElementById("painelCategorias").hidden = false;
@@ -2507,10 +2511,6 @@ function renderizarUltimasMovimentacoes(movimentacoes) {
     });
 }
 
-// INICIALIZAR TELA INICIAL
-configurarMesInicio();
-carregarInicio();
-
 const controleTema = document.getElementById("temaEscuro");
 
 // Carrega a preferência salva
@@ -2529,6 +2529,27 @@ controleTema.addEventListener("change", function () {
 
     localStorage.setItem("temaEscuro", ativado);
 });
+
+async function carregarDadosIniciais() {
+    try {
+        await carregarCategorias();
+        await carregarFormasPagamento();
+
+        await carregarFiltroPagamento();
+        await carregarMovimentacoes();
+
+        await carregarCategoriasDespesa();
+        await carregarFormasPagamentoDespesa();
+
+        carregarMesesRelatorio();
+        configurarMesInicio();
+
+        await carregarInicio();
+
+    } catch (erro) {
+        console.error("Erro ao carregar dados iniciais:", erro);
+    }
+}
 
 
 carregarTema();
