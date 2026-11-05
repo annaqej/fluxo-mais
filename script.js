@@ -122,46 +122,36 @@ async function sairDaConta() {
 }
 
 // NAVEGAÇÃO ENTRE AS TELAS
-const links = document.querySelectorAll("nav a");
-const paginas = document.querySelectorAll(".page");
-
-links.forEach(link => {
-    link.addEventListener("click", function (event) {
-        event.preventDefault();
-
-        const paginaSelecionada = this.dataset.page;
-
-        links.forEach(item => item.classList.remove("active"));
-        this.classList.add("active");
-
-        paginas.forEach(pagina => pagina.classList.remove("active"));
-
-        document.getElementById(paginaSelecionada)
-            .classList.add("active");
-
-        // CARREGAR PAGAMENTOS PENDENTES e relatorio
-        if (paginaSelecionada === "pendentes") {
-            carregarPendentes();
-        }
-
-        if (paginaSelecionada === "relatorios") {
-            carregarRelatorio();
-        }
-        if (paginaSelecionada === "inicio") {
-            carregarInicio();
-        }
+window.navegarPara = function (paginaSelecionada) {
+    document.querySelectorAll(".page").forEach(pagina => {
+        pagina.classList.remove("active");
     });
-});
+
+    const pagina = document.getElementById(paginaSelecionada);
+    if (pagina) {
+        pagina.classList.add("active");
+    }
+
+    if (paginaSelecionada === "pendentes") {
+        carregarPendentes();
+    }
+
+    if (paginaSelecionada === "relatorios") {
+        carregarRelatorio();
+    }
+
+    if (paginaSelecionada === "inicio") {
+        carregarInicio();
+    }
+};
 
 // VOLTAR AO INÍCIO
 function voltarInicio() {
-    paginas.forEach(pagina => pagina.classList.remove("active"));
-    links.forEach(link => link.classList.remove("active"));
+    window.navegarPara("inicio");
 
-    document.getElementById("inicio").classList.add("active");
-
-    document.querySelector('[data-page="inicio"]')
-        .classList.add("active");
+    if (window.atualizarNavegacaoVue) {
+        window.atualizarNavegacaoVue("inicio");
+    }
 }
 
 
@@ -2511,25 +2501,6 @@ function renderizarUltimasMovimentacoes(movimentacoes) {
     });
 }
 
-const controleTema = document.getElementById("temaEscuro");
-
-// Carrega a preferência salva
-function carregarTema() {
-    const temaSalvo = localStorage.getItem("temaEscuro") === "true";
-
-    document.body.classList.toggle("tema-escuro", temaSalvo);
-    controleTema.checked = temaSalvo;
-}
-
-// Alterna o tema
-controleTema.addEventListener("change", function () {
-    const ativado = this.checked;
-
-    document.body.classList.toggle("tema-escuro", ativado);
-
-    localStorage.setItem("temaEscuro", ativado);
-});
-
 async function carregarDadosIniciais() {
     try {
         await carregarCategorias();
@@ -2552,5 +2523,4 @@ async function carregarDadosIniciais() {
 }
 
 
-carregarTema();
 

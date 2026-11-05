@@ -47,14 +47,12 @@
             <span>Auto Elétrico Denicar</span>
         </div>
 
-        <nav>
-            <a href="#" class="active" data-page="inicio">▦ Início</a>
-            <a href="#" data-page="entradas">↗ Entradas</a>
-            <a href="#" data-page="despesas">↘ Despesas</a>
-            <a href="#" data-page="movimentacoes">☷ Movimentações</a>
-            <a href="#" data-page="pendentes">▤ Pagamentos Pendentes</a>
-            <a href="#" data-page="relatorios">▧ Relatórios</a>
-            <a href="#" data-page="configuracoes">⚙ Configurações</a>
+        <nav id="navegacaoVue">
+            <a href="#" v-for="item in itens" :key="item.pagina"
+               :class="{ active: paginaAtual === item.pagina }"
+               @click.prevent="selecionarPagina(item.pagina)">
+                {{ item.icone }} {{ item.nome }}
+            </a>
         </nav>
         <button class="btn-sair" onclick="sairDaConta()">
             ↪ Sair da conta
@@ -721,7 +719,7 @@
                 <div id="listaPagamentosConfig"></div>
             </div>
 
-            <div class="panel configuracao-card">
+            <div class="panel configuracao-card" id="configuracaoVue">
                 <div class="configuracao-titulo">
                     <span>🌙</span>
                     <div>
@@ -737,7 +735,7 @@
                     </div>
 
                     <label class="switch">
-                        <input type="checkbox" id="temaEscuro">
+                        <input type="checkbox" id="temaEscuro" v-model="temaEscuro">
                         <span class="switch-slider"></span>
                     </label>
                 </div>
@@ -775,6 +773,9 @@
     <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
 
     <script src="script.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script src="vue-config.js"></script>
+    <script src="vue-navegacao.js"></script>
 
 
 
